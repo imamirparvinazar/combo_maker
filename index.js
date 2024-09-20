@@ -51,8 +51,8 @@ const addDataToDB = () => {
     dataList.splice(randomIndex, 1);
 
     // اضافه کردن داده به پایگاه داده
-    const insertQuery = 'INSERT INTO daily_combo (needed_atoms, moelcule_name, reward) VALUES (?, ?, ?)';
-    db.query(insertQuery, [dataToAdd.needed_atoms, dataToAdd.molecule_name, reward], (err) => {
+    const insertQuery = 'INSERT INTO daily_combo (needed_atoms, molecule_name, reward) VALUES (?, ?, ?)';
+    db.query(insertQuery, [dataToAdd.needed_atoms, dataToAdd.molecule_name, dataToAdd.reward], (err) => {
         if (err) {
             console.error('Error inserting data:', err);
             return;
@@ -61,8 +61,17 @@ const addDataToDB = () => {
     });
 };
 
-// راه اندازی تابع هر 24 ساعت
-setInterval(addDataToDB, 24 * 60 * 60 * 1000); // 24 ساعت به میلی‌ثانیه
+// مسیر API برای اجرای تابع addDataToDB
+app.post('/execute-add', (req, res) => {
+    const { key } = req.body;
+
+    if (key !== privateKey) {
+        return res.status(403).send('Invalid private key');
+    }
+
+    addDataToDB();
+    res.send('Data added to database if available.');
+});
 
 // راه‌اندازی سرور
 app.listen(PORT, () => {
