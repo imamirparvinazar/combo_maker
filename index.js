@@ -9,7 +9,6 @@ const https = require('https');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 6000;
 const privateKey = process.env.PRIVATE_KEY; // کلید خصوصی از فایل .env
 const sslServerOptions = {
   key: fs.readFileSync('/etc/letsencrypt/live/srv575377.hstgr.cloud/privkey.pem'),
