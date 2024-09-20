@@ -3,13 +3,19 @@ const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const https = require('https');
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 6000;
 const privateKey = process.env.PRIVATE_KEY; // کلید خصوصی از فایل .env
-
+const sslServerOptions = {
+  key: fs.readFileSync('/etc/letsencrypt/live/srv575377.hstgr.cloud/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/srv575377.hstgr.cloud/fullchain.pem')
+};
+  
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -73,7 +79,6 @@ app.post('/execute-add', (req, res) => {
     res.send('Data added to database if available.');
 });
 
-// راه‌اندازی سرور
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+https.createServer(sslServerOptions, app).listen(5000, () => {
+  console.log('HTTPS Server running on port 5000');
 });
